@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+ios-app/node_modules/
+
+# Build output
+dist/
+*.dmg
+*.zip
+*.blockmap
+
+# Root-level stray files
+/index.html
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Electron
+out/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# Expo
+ios-app/.expo/
+ios-app/ios/
+ios-app/android/
+
+# User data (API keys stored locally — never commit)
+# These live in ~/Library/Application Support/rectransc/

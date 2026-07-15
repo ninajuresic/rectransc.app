@@ -1,0 +1,85 @@
+{
+  "name": "rectransc",
+  "version": "1.0.0",
+  "description": "Local desktop app for recording, transcribing, and summarising meetings",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "generate-icons": "node scripts/generate-icons.js",
+    "package": "node scripts/generate-icons.js && electron-builder --mac",
+    "package-win": "node scripts/generate-icons.js && electron-builder --win"
+  },
+  "build": {
+    "appId": "com.rectransc.desktop",
+    "productName": "RecTransc",
+    "copyright": "RecTransc",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "!ios-app",
+      "!scripts",
+      "!assets/*.svg",
+      "!dist"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "title": "RecTransc",
+      "icon": "assets/icon.png",
+      "background": null,
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "icon": "assets/icon.png",
+      "target": "nsis"
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "target": "AppImage"
+    }
+  },
+  "dependencies": {
+    "openai": "^4.47.1",
+    "@anthropic-ai/sdk": "^0.27.3"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "electron": "^28.3.3",
+    "electron-builder": "^24.9.4"
+  }
+}

@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; style-src 'self' 'unsafe-inline';"
+        />
+        <title>RecTransc</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <!-- ── Settings Overlay ──────────────────────────────────── -->
+        <div id="settings-overlay" class="overlay hidden">
+            <div class="settings-card">
+                <div class="settings-emoji">🔑</div>
+                <h2 id="settings-title">Groq API Key</h2>
+                <p id="settings-desc">
+                    100% free — covers both transcription and meeting analysis.
+                    No credit card needed.
+                </p>
+                <input
+                    type="password"
+                    id="groq-key-input"
+                    placeholder="gsk_…"
+                    autocomplete="off"
+                    spellcheck="false"
+                />
+                <div id="key-error" class="field-error hidden">
+                    Key should start with gsk_
+                </div>
+                <div class="settings-actions">
+                    <button
+                        id="settings-cancel-btn"
+                        class="btn-secondary hidden"
+                    >
+                        Cancel
+                    </button>
+                    <button id="save-key-btn" class="btn-primary">
+                        Save Key
+                    </button>
+                </div>
+                <a
+                    id="get-key-link"
+                    href="https://console.groq.com/keys"
+                    target="_blank"
+                    >Get your free key at console.groq.com →</a
+                >
+            </div>
+        </div>
+
+        <div id="app">
+            <!-- Sidebar -->
+            <aside id="sidebar">
+                <div class="sidebar-top">
+                    <div class="app-brand">
+                        <!-- Microphone icon -->
+                        <svg
+                            class="brand-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                            />
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                            <line x1="12" y1="19" x2="12" y2="23" />
+                            <line x1="8" y1="23" x2="16" y2="23" />
+                        </svg>
+                        <span class="brand-name">RecTransc</span>
+                    </div>
+                    <!-- Settings button -->
+                    <button
+                        id="settings-btn"
+                        class="icon-btn"
+                        title="API Key Settings"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06
+                     a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09
+                     A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83
+                     l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09
+                     A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83
+                     l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09
+                     a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83
+                     l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09
+                     a1.65 1.65 0 0 0-1.51 1z"
+                            />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- New Recording button -->
+                <button id="new-recording-btn" class="new-recording-btn">
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle
+                            cx="12"
+                            cy="12"
+                            r="3"
+                            fill="currentColor"
+                            stroke="none"
+                        />
+                        <path
+                            d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+                        />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    </svg>
+                    New Recording
+                </button>
+
+                <!-- Import / Paste Transcript button -->
+                <button id="import-btn" class="import-btn">
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                        />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="12" y1="18" x2="12" y2="12" />
+                        <line x1="9" y1="15" x2="15" y2="15" />
+                    </svg>
+                    Import / Paste
+                </button>
+
+                <div class="list-label">RECORDINGS</div>
+
+                <div id="transcript-list" class="transcript-list">
+                    <div class="list-empty">No recordings yet</div>
+                </div>
+            </aside>
+
+            <!-- Main content -->
+            <main id="content">
+                <!-- Recording View (default) -->
+                <div id="recording-view">
+                    <div class="record-scene">
+                        <button
+                            id="record-btn"
+                            class="record-btn"
+                            aria-label="Start recording"
+                        >
+                            <div class="record-ring"></div>
+                            <div class="record-inner">
+                                <div class="record-icon"></div>
+                            </div>
+                        </button>
+                        <div id="timer" class="timer">00:00</div>
+                        <div id="status-text" class="status-text">
+                            Click to start recording
+                        </div>
+                        <div id="waveform" class="waveform hidden">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail View -->
+                <div id="detail-view" class="hidden">
+                    <div class="detail-header">
+                        <div class="detail-header-text">
+                            <h1 id="detail-title"></h1>
+                            <div class="detail-meta">
+                                <span id="detail-date"></span>
+                                <span class="meta-dot">·</span>
+                                <span id="detail-duration"></span>
+                            </div>
+                        </div>
+                        <button
+                            id="delete-btn"
+                            class="delete-btn"
+                            title="Delete this recording"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <polyline points="3 6 5 6 21 6" />
+                                <path
+                                    d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+                                />
+                                <path d="M10 11v6M14 11v6" />
+                                <path
+                                    d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"
+                                />
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
+
+                    <div class="detail-body">
+                        <!-- Summary -->
+                        <section class="detail-section">
+                            <div class="section-header">
+                                <div class="section-label">
+                                    <span class="section-dot dot-summary"></span
+                                    >Summary
+                                </div>
+                                <svg
+                                    class="chevron"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                            </div>
+                            <div class="section-content">
+                                <p id="detail-summary"></p>
+                            </div>
+                        </section>
+
+                        <!-- Action Points -->
+                        <section class="detail-section">
+                            <div class="section-header">
+                                <div class="section-label">
+                                    <span class="section-dot dot-actions"></span
+                                    >Action Points
+                                </div>
+                                <svg
+                                    class="chevron"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                            </div>
+                            <div class="section-content">
+                                <ul id="detail-actions"></ul>
+                            </div>
+                        </section>
+
+                        <!-- Full Transcript -->
+                        <section class="detail-section">
+                            <div class="section-header">
+                                <div class="section-label">
+                                    <span
+                                        class="section-dot dot-transcript"
+                                    ></span
+                                    >Full Transcript
+                                </div>
+                                <svg
+                                    class="chevron"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                            </div>
+                            <div class="section-content">
+                                <p id="detail-transcript"></p>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <!-- /detail-view -->
+
+                <!-- ── Import View (shown when Import/Paste button clicked) ───── -->
+                <div id="import-view" class="hidden">
+                    <div class="import-scene">
+                        <div class="import-scene-top">
+                            <h2 class="import-scene-title">
+                                Import Transcript
+                            </h2>
+                            <p class="import-scene-desc">
+                                Paste a transcript or upload a
+                                <strong>.txt</strong> file. RecTransc will
+                                generate the summary and action points for you.
+                            </p>
+                            <div class="import-file-row">
+                                <label class="file-upload-label">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    >
+                                        <path
+                                            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                                        />
+                                        <polyline points="17 8 12 3 7 8" />
+                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                    </svg>
+                                    Choose File (.txt)
+                                    <input
+                                        type="file"
+                                        id="file-input"
+                                        accept=".txt,.text,.md,.srt,.vtt"
+                                    />
+                                </label>
+                                <span
+                                    id="file-name"
+                                    class="file-name-label"
+                                ></span>
+                            </div>
+                            <textarea
+                                id="transcript-input"
+                                placeholder="Or paste your meeting transcript here…  (Cmd+Enter to analyse)"
+                                spellcheck="false"
+                            ></textarea>
+                            <div class="import-meta-row">
+                                <span id="word-count" class="word-count"></span>
+                                <span
+                                    id="import-status"
+                                    class="import-status-text"
+                                ></span>
+                            </div>
+                            <div
+                                id="import-error"
+                                class="field-error hidden"
+                            ></div>
+                        </div>
+                        <div class="import-scene-footer">
+                            <button
+                                id="import-cancel-btn"
+                                class="btn-secondary"
+                            >
+                                Cancel
+                            </button>
+                            <button id="import-submit-btn" class="btn-primary">
+                                Analyse →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /import-view -->
+            </main>
+        </div>
+        <!-- /app -->
+
+        <script src="renderer.js"></script>
+    </body>
+</html>

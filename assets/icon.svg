@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <!-- Dark background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#1e1050"/>
+      <stop offset="100%" stop-color="#0a0a18"/>
+    </linearGradient>
+    <!-- Microphone icon gradient -->
+    <linearGradient id="ic" x1="512" y1="180" x2="512" y2="840" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#d4c4fc"/>
+      <stop offset="100%" stop-color="#8a68d0"/>
+    </linearGradient>
+    <!-- Inner glow -->
+    <radialGradient id="glow" cx="50%" cy="47%" r="50%">
+      <stop offset="0%"   stop-color="#9b7fdb" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#9b7fdb" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Rounded-square background -->
+  <rect width="1024" height="1024" rx="220" ry="220" fill="url(#bg)"/>
+
+  <!-- Soft purple glow behind the mic -->
+  <circle cx="512" cy="490" r="300" fill="url(#glow)"/>
+
+  <!-- Outer ring accent -->
+  <circle cx="512" cy="490" r="298" fill="none" stroke="#7c5cbf" stroke-width="2" opacity="0.25"/>
+
+  <!-- ── Microphone ── -->
+
+  <!-- Capsule body -->
+  <rect x="408" y="195" width="208" height="322" rx="104" fill="url(#ic)"/>
+
+  <!-- Subtle highlight on capsule -->
+  <rect x="440" y="215" width="80" height="120" rx="40"
+        fill="white" opacity="0.15"/>
+
+  <!-- Stand arc: lower semicircle from (350,540) through (512,702) to (674,540) -->
+  <path d="M 350 540 A 162 162 0 0 1 674 540"
+        fill="none" stroke="url(#ic)" stroke-width="48" stroke-linecap="round"/>
+
+  <!-- Pole -->
+  <line x1="512" y1="702" x2="512" y2="796"
+        stroke="url(#ic)" stroke-width="48" stroke-linecap="round"/>
+
+  <!-- Base -->
+  <line x1="376" y1="830" x2="648" y2="830"
+        stroke="url(#ic)" stroke-width="48" stroke-linecap="round"/>
+</svg>
