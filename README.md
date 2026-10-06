@@ -1,6 +1,5 @@
 # RecTransc
-
-A local macOS desktop app that records meetings, transcribes them with OpenAI Whisper, and generates a summary + action points using GPT-4o. All transcripts are saved locally on your machine.
+ records and transcribes meetings, then writes the summary and action points.
 
 ---
 
